@@ -1,0 +1,1 @@
+exports.announcement = require("./announcement");
