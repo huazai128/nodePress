@@ -1,5 +1,6 @@
 const argv = require("yargs").argv;  //用于获取命令行的数据 node  db_username=huazai
 
+//连接mongodb
 exports.MONGODB = {
     uri:`mongodb://127.0.0.1:${argv.dbport || '27017' }/NodePress`,
     username: argv.db_username || 'DB_username',
@@ -22,18 +23,18 @@ exports.AUTH = {
 }
 
 exports.BAIDU = {
-  site: argv.baidu_site || 'your baidu site domain like : surmon.me',
+  site: argv.baidu_site || 'your baidu site domain like',
   token: argv.baidu_token || 'your baidu seo push token'
 }
 
 exports.EMAIL = {
-  account: argv.email_account || 'your email address like : admin@surmon.me',
+  account: argv.email_account || 'your email address like',
   password: argv.email_password || 'your email password'
 }
 
 exports.AKISMET = {
   key: argv.akismet_key || 'your akismet Key',
-  blog: argv.akismet_blog || 'your akismet blog site, like: https://surmon.me'
+  blog: argv.akismet_blog || 'your akismet blog site, like'
 }
 
 exports.APP = {
@@ -46,6 +47,6 @@ exports.INFO = {
   name: 'NodePress',
   version: '1.0.0',
   author: 'Surmon',
-  site: 'https://surmon.me',
+  site: 'https://github.com/huazai128',
   powered: ['Vue2', 'Nuxt.js', 'React', 'Angular4', 'Bootstrap4', 'jQuery', 'Video.js', 'Node.js', 'MongoDB', 'Express', 'Nginx']
 }
