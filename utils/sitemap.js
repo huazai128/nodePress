@@ -84,8 +84,16 @@ const getDates = success => {
 
 
 //生成xml文件
-const buildSiteMap = (success,err) => {
+const buildSiteMap = (success,error) => {
     getDates(() => {
-        
+        sitemap.toXML((err,xml) => {
+            if(err && error) return error(err);
+            if(!err && success) success(xml);
+            //同步写入
+            fs.writeFileSync("../static/sitemap.xml",sitemap.toString());
+            sitemap = null;
+        })
     })
 }
+
+module.exports = buildSiteMap;

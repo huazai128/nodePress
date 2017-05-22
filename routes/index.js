@@ -4,7 +4,7 @@ const controllers = require("controllers/index");
 const routes = (app) => {
     //拦截器
     app.all("*",(req,res,next) => {
-        console.log("进来了！！！")
+        console.log("进来了！！！");
         //设置 Header和跨域解决
         //const allowedOrigins = []
         const origin = req.headers.origin || "";
@@ -54,7 +54,6 @@ const routes = (app) => {
 
     // Api
     app.get("/", (req,res) => {
-        console.log("请求进来了！")
         res.jsonp(config.INFO);
     })
 
@@ -62,7 +61,6 @@ const routes = (app) => {
     app.all("/auth",function(){
 
     });
-    console.log("asasa")
     // Announcement
     app.all('/announcement', controllers.announcement.list);
     app.all('/announcement/:announcement_id', controllers.announcement.item);

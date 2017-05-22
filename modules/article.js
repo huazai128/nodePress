@@ -14,7 +14,7 @@ const articleSchema = new mongoose.Schema({
     keywords:[{ type:String }],
 
     //文章描述
-    discription:{ type:String,default:"" },
+    description:{ type:String,default:"" },
 
     //文章内容
     content:{type:String,required: true, validate: /\S+/ },
