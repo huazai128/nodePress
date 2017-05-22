@@ -12,7 +12,7 @@ const announcementCtrl = { list:{},item:{} };
 
 //获取所用的公告信息
 announcementCtrl.list.GET = (req,res) => {  //使用解构赋值；
-    console.log(req.query)
+    console.log(req.query);
     //获取请求参数
     let { page = 1,pre_page = 10,state,keyword = ""} = req.query;
     //过滤条件
@@ -26,12 +26,13 @@ announcementCtrl.list.GET = (req,res) => {  //使用解构赋值；
         "content": new RegExp(keyword)
     }
     //按照type查询
-    if(["0","1"].includes(state)){ //includes()判断数组存在当前值
+    if(["0","1"].includes(state)){ //includes()和indexOf()判断数组存在当前值
         querys.state = state;
     }
     //分页查询
     Announcement.paginate(querys,options) //根据查询条件查询所有的数据，并进行分页；
         .then((announcements) => { //查询所有的数据
+            console.log(announcements.page);
             handleSuccess({
                 res,
                 message:"公告列表获取成功",

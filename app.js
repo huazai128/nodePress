@@ -4,7 +4,7 @@ const helmet = require("helmet");   //用于保护node应用的安全；
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoosePaginate = require("mongoose-paginate"); //分页
-require("app-module-path").addPath(__dirname + "/"); //模块路径
+require("app-module-path").addPath(__dirname + "/"); //模块路径  模块引用路径
 
 const config = require("config/config");
 const mongodb = require("config/mongodb");
@@ -16,7 +16,7 @@ mongodb.connect();
 
 //翻页全局配置
 mongoosePaginate.paginate.options = {
-    limit:config.APP.LIMIT
+    limit:config.APP.LIMIT  // 设置限制查询数据
 }
 
 app.set("port",config.APP.PORT);  //设置端口

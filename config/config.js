@@ -39,14 +39,14 @@ exports.AKISMET = {
 
 exports.APP = {
   ROOT_PATH: __dirname,
-  LIMIT: 10,
-  PORT: 8000
+  LIMIT: 10, //
+  PORT: 8000 //端口号
 }
 
 exports.INFO = {
   name: 'NodePress',
   version: '1.0.0',
-  author: 'Surmon',
-  site: 'https://github.com/huazai128',
+  author: 'huazai',
+  site: 'http://localhost:8000',
   powered: ['Vue2', 'Nuxt.js', 'React', 'Angular4', 'Bootstrap4', 'jQuery', 'Video.js', 'Node.js', 'MongoDB', 'Express', 'Nginx']
 }
