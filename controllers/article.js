@@ -79,5 +79,14 @@ artilceCtrl.list.GET = (req,res) => {
             }
         }
     }
+
+    // 如果是前台请求，则重置公开状态和发布状态
+    if (!authIsVerified(req)) {
+        querys.state = 1;
+        querys.public = 1;
+    };
+}
+
+artilceCtrl.list.POST = ({body:artilce},res) => {
     
 }

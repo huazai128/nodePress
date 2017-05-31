@@ -116,8 +116,6 @@ announcementCtrl.item.PUT = ({params:{ announcement_id },body:item},res) => {
     })
 }
 
-
-
 // export
 exports.list = (req, res) => { handleRequest({ req, res, controller: announcementCtrl.list })};
 exports.item = (req, res) => { handleRequest({ req, res, controller: announcementCtrl.item })};

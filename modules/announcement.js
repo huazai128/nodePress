@@ -22,7 +22,7 @@ const announcementSchema = new mongoose.Schema({
 announcementSchema.plugin(mongoosePaginate); // plugin用于插件的插入
 announcementSchema.plugin(autoIncrement.plugin,{
     model:"Announcement",  //插入的模块中
-    field:"id",  //
+    field:"id",  //字段
     startAt:1,  //开始值
     incrementBy:1  //id每次自增数值
 });

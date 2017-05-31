@@ -6,10 +6,11 @@ const routes = (app) => {
     app.all("*",(req,res,next) => {
         console.log("进来了！！！");
         //设置 Header和跨域解决
-        //const allowedOrigins = []
+        const allowedOrigins = ['https://surmon.me', 'https://admin.surmon.me'];
         const origin = req.headers.origin || "";
         //console.log(req.headers.origin);//查看请求头信息
-        if(origin.includes("localhost")){  //includes：判断数组中是否包含localhost
+        if(allowedOrigins.includes(origin) || origin.includes("localhost")){  //includes：判断数组中是否包含localhost
+            console.log(origin);
             res.setHeader("Access-Control-Allow-Origin",origin);
         }
         res.header('Access-Control-Allow-Headers', 'Authorization, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With');
@@ -24,9 +25,9 @@ const routes = (app) => {
             return false;
         }
 
-        //这里的作用？
         if(Object.is(process.env.NODE_ENV,"production")){ //Object.is(value1,value2):判断两个值是否相等；
             const { origin,referer } = req.headers; //使用解构赋值
+            console.log(origin,referer);
             const originVerified = (!origin || origin.includes("localhost") && (!referer || referer.includes("localhost")));
             if(!originVerified){
                 res.status(403).jsonp({ code: 0, message: '来者何人！' })
@@ -42,13 +43,6 @@ const routes = (app) => {
             next();
             return false;
         };
-
-        // // 拦截所有非管路员的非get请求
-        // if (!authIsVerified(req) && !Object.is(req.method, 'GET')) {
-        //     res.status(401).jsonp({ code: 0, message: '来者何人！' })
-        //     return false;
-        // };
-        console.log("===")
         next();
     })
 
@@ -61,6 +55,10 @@ const routes = (app) => {
     app.all("/auth",function(){
 
     });
+
+    //Qiniu
+    app.all("/qiniu",controllers.qiniu);
+
     // Announcement
     app.all('/announcement', controllers.announcement.list);
     app.all('/announcement/:announcement_id', controllers.announcement.item);
