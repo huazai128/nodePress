@@ -1,6 +1,6 @@
 //百度推送
-const request = require("request");
-const config = require("config/config");
+const request = require("request"); //请求
+const config = require("config/config");  //配置参数
 
 //提交记录
 exports.baiduSeoPush = urls => {

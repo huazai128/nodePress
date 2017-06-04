@@ -59,6 +59,10 @@ const routes = (app) => {
     //Qiniu
     app.all("/qiniu",controllers.qiniu);
 
+    //Tag
+    app.all("/tag",controllers.tag.list);
+    app.all("/tag/:_id",controllers.tag.item);
+
     // Announcement
     app.all('/announcement', controllers.announcement.list);
     app.all('/announcement/:announcement_id', controllers.announcement.item);

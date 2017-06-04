@@ -44,7 +44,8 @@ const getDates = success => {
      * 同理Category和Article都是一样
      * 使用fs来读取文件
      */
-    Tag.find({},sort({"_id":-1}))
+    Tag.find({})
+        .sort({'_id': -1})
         .then((tags) => {
             tags.forEach((tag) => {
                 sitemap.add({
@@ -53,7 +54,7 @@ const getDates = success => {
                     priority: 0.6  //权重
                 })
             })
-            return Category.find({},sort({"_id":-1}));
+            return Category.find({}).sort({"_id":-1});
         })
         .then((categories) => {
             categories.forEach((category) => {
@@ -63,7 +64,7 @@ const getDates = success => {
                     priority: 0.6
                 })
             })
-            return Article.find({ state: 1, public: 1},sort({"_id": -1}));
+            return Article.find({ state: 1, public: 1}).sort({"_id": -1});
         })
         .then((articles) => {
             articles.forEach((article) => {
@@ -90,7 +91,7 @@ const buildSiteMap = (success,error) => {
             if(err && error) return error(err);
             if(!err && success) success(xml);
             //同步写入
-            fs.writeFileSync("../static/sitemap.xml",sitemap.toString());
+            fs.writeFileSync("../static/sitemap.xml",{flug:"r"},sitemap.toString());
             sitemap = null;
         })
     })

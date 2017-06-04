@@ -36,8 +36,8 @@ tagSchema.plugin(autoIncrement.plugin,{
   incrementBy: 1
 })
 
-tagSchema.pre("findOneAndUpdate",(next) => {
-    this.findOneAndUpdate({},{update_at: Date.now()});
+tagSchema.pre("findByIdAndUpdate",(next) => {
+    this.findByIdAndUpdate({},{update_at: Date.now()});
     next();
 })
 

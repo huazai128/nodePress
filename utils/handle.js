@@ -13,6 +13,6 @@ exports.handleError = ({ res, message = '请求失败', err = null }) => {
 };
 
 //请求成功
-exports.handleSuccess = ({ res, message = '请求成功', result = null }) => {
+exports.handleSuccess = ({ res, message = '请求成功', result = null }) => {  //result默认为null
   res.jsonp({ code: 1, message, result });
 };
