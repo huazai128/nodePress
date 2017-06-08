@@ -32,7 +32,7 @@ announcementCtrl.list.GET = (req,res) => {  //使用解构赋值；
     //分页查询
     Announcement.paginate(querys,options) //根据查询条件查询所有的数据，并进行分页；
         .then((announcements) => { //查询所有的数据
-            console.log(announcements.page);
+            console.log(announcements);
             handleSuccess({
                 res,
                 message:"公告列表获取成功",

@@ -40,7 +40,7 @@ exports.AKISMET = {
 exports.APP = {
   ROOT_PATH: __dirname,
   LIMIT: 10, //
-  PORT: 8000 //端口号
+  PORT: 8080 //端口号
 }
 
 exports.INFO = {

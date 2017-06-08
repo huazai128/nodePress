@@ -24,7 +24,6 @@ const routes = (app) => {
             res.sendStatus(200);
             return false;
         }
-
         if(Object.is(process.env.NODE_ENV,"production")){ //Object.is(value1,value2):判断两个值是否相等；
             const { origin,referer } = req.headers; //使用解构赋值
             console.log(origin,referer);
@@ -34,7 +33,6 @@ const routes = (app) => {
                 return false;
             }
         }
-
         // 排除auth的post请求 && 评论的post请求 && like请求
         const isLike = Object.is(req.url, '/like') && Object.is(req.method, 'POST');
         const isPostAuth = Object.is(req.url, '/auth') && Object.is(req.method, 'POST');
@@ -44,17 +42,14 @@ const routes = (app) => {
             return false;
         };
         next();
-    })
-
+    });
     // Api
     app.get("/", (req,res) => {
         res.jsonp(config.INFO);
-    })
+    });
 
     //Auth
-    app.all("/auth",function(){
-
-    });
+    app.all("/auth",function(){});
 
     //Qiniu
     app.all("/qiniu",controllers.qiniu);
@@ -62,6 +57,9 @@ const routes = (app) => {
     //Tag
     app.all("/tag",controllers.tag.list);
     app.all("/tag/:_id",controllers.tag.item);
+
+    //Article
+    app.all("/article",controllers.article.list);
 
     // Announcement
     app.all('/announcement', controllers.announcement.list);
