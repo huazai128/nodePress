@@ -59,7 +59,7 @@ const routes = (app) => {
     app.all("/tag/:_id",controllers.tag.item);
 
     //Article
-    app.all("/article",controllers.article.list);
+    app.all('/article', controllers.article.list);
 
     // Announcement
     app.all('/announcement', controllers.announcement.list);

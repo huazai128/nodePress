@@ -1,7 +1,6 @@
 
 //请求
 exports.handleRequest = ({ req, res, controller }) => {//对象结构是根据对象属性肤质，与顺序无关；
-    console.log(controller);
     const method = req.method;
     const support = !!controller[method];//!!强制把其他类型转换成boolean类型
     support && controller[method](req,res);
@@ -10,6 +9,7 @@ exports.handleRequest = ({ req, res, controller }) => {//对象结构是根据�
 
 //请求错误
 exports.handleError = ({ res, message = '请求失败', err = null }) => {
+  console.log(err);
   res.jsonp({ code: 0, message, debug: err });
 };
 
