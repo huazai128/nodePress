@@ -9,7 +9,6 @@ exports.handleRequest = ({ req, res, controller }) => {//对象结构是根据�
 
 //请求错误
 exports.handleError = ({ res, message = '请求失败', err = null }) => {
-  console.log(err);
   res.jsonp({ code: 0, message, debug: err });
 };
 

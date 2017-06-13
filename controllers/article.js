@@ -36,8 +36,8 @@ articleCtrl.list.POST = ({ body: article },res) => {
 articleCtrl.list.GET = ( req,res) => {
     // 查询参数
     let { keyword,state,category,public,tag,pre_page,page,date,category_slug,tag_slug,hot } = req.query;
-    console.log(req.query);
-    const arr = ['0','1','-1']
+
+    const arr = ['0','1','-1'];
 
     // 过滤条件
     let options = {

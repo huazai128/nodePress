@@ -61,6 +61,10 @@ const routes = (app) => {
     //Article
     app.all('/article', controllers.article.list);
 
+    // Category
+    app.all("/category",controllers.category.list);
+    app.all("/category/:_id",controllers.category.item);
+
     // Announcement
     app.all('/announcement', controllers.announcement.list);
     app.all('/announcement/:announcement_id', controllers.announcement.item);
