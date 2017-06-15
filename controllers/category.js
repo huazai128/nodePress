@@ -109,19 +109,55 @@ categoryCtrl.list.GET = ( req,res) => {
     }
 }
 
-categoryCtrl.item.PUT = ({params:{ _id },body:category,body:{ slug }},res) => {
+categoryCtrl.item.PUT = ({params:{ _id },body:category,body:{ slug,pid }},res) => {
     if(!slug){
         handleError({res,message:"缺少slug字段"});
         return false;
     }
-
     // 查询slug
     Category.find(slug)
     .then(([_category]) => { // find：查询是一个数组 利用结构赋值；
-        const hasExit = (_category && (_category._id == category._id))
+        const hasExit = (_category && (_category._id == category._id));
+        hasExit ? handleError({res,message:"slug已存在"}) : putCategory();
+    })
+    .catch((err) => {
+        console.log(err);
+        handleError({res,message:"查询slug失败",err});
+    });
+
+    // 保存
+    const putCategory = () => {
+        if(['','0','null','false'].includes(pid) || !pid || Object.is(category._id,pid)){
+            category.pid = null;
+        }
+        Category.findByIdAndUpdate(_id,category,{new:true})
+        .then((result) => {
+            handleSuccess({res,message:"保存成功",result});
+        })
+        .catch((err) => {
+            console.log(err);
+            handleError({res,message:"保存失败",err})
+        })
+    }
+}
+
+// 单个删除
+categoryCtrl.item.DELETE = ({params: { _id }},res) => {
+    console.log(_id)
+    Category.findByIdAndRemove(_id)
+    .then((result) => {
+        handleSuccess({res,message:"删除成功",result});
+    })
+    .catch((err) => {
+        console.log(err);
+        handleError({res,message:"删除失败",err});
     })
 }
 
+// 多个删除
+categoryCtrl.list.DELETE = ({body: { cagetories }},res) => {
+
+}
 
 
 

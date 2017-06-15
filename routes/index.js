@@ -6,13 +6,14 @@ const routes = (app) => {
     app.all("*",(req,res,next) => {
         console.log("进来了！！！");
         //设置 Header和跨域解决
-        const allowedOrigins = ['https://surmon.me', 'https://admin.surmon.me'];
-        const origin = req.headers.origin || "";
+        // const allowedOrigins = ['https://surmon.me', 'https://admin.surmon.me'];
+        //const origin = req.headers.origin || "";
         //console.log(req.headers.origin);//查看请求头信息
-        if(allowedOrigins.includes(origin) || origin.includes("localhost")){  //includes：判断数组中是否包含localhost
-            console.log(origin);
-            res.setHeader("Access-Control-Allow-Origin",origin);
-        }
+        // if(allowedOrigins.includes(origin) || origin.includes("localhost")){  //includes：判断数组中是否包含localhost
+        //     console.log(origin);
+            
+        // }
+        res.setHeader("Access-Control-Allow-Origin","*");
         res.header('Access-Control-Allow-Headers', 'Authorization, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With');
         res.header('Access-Control-Allow-Methods', 'PUT,PATCH,POST,GET,DELETE,OPTIONS');
         res.header('Access-Control-Max-Age', '1728000');

@@ -44,8 +44,8 @@ categorySchema.plugin(autoIncrement.plugin,{
 })
 
 //更新
-categorySchema.pre("findOneAndUpdate",(next) => {
-    this.findOneAndUpdate({},{update_at:Date.now()});
+categorySchema.pre("findByIdAndUpdate",(next) => {
+    this.findByIdAndUpdate({},{update_at:Date.now()});
     next();
 })
 
