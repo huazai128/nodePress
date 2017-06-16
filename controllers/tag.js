@@ -139,13 +139,16 @@ tagCtrls.list.POST = ({ body:tag,body: { slug }},res) => {
          handleError({res,message:"slug不合法"});
          return false;
      };
+     console.log(_id);
      //根据slug  查询出来是一个数组
-     Tag.find({slug}).then(([_tag]) => {
+     Tag.find({slug:slug}).then(([_tag]) => {
+         console.log(_tag)
          //判断_tag是否存在并且 _tag._id和tag._id是否相等，如果
-         const hasExisted = (_tag && (_tag._id != tag._id));
+         const hasExisted = (_tag && (_tag._id == tag._id));
          console.log(hasExisted);
-         hasExisted ? handleError({req,message:"slug已存在"}) : putTag();
+         hasExisted ? handleError({res,message:"slug已存在"}) : putTag();
      }).catch((err) => {
+         console.log(err);
          handleError({res,message:"修改前查询失败"},err);
      });
      //修改tag
@@ -153,10 +156,11 @@ tagCtrls.list.POST = ({ body:tag,body: { slug }},res) => {
          Tag.findByIdAndUpdate(_id,tag,{new:true})
          .then( result => {
              handleSuccess({res,result,message:"修改成功"});
-             buildSiteMap();
-             baiduSeoUpdate(`${config.INFO.site}/tag/${result.slug}`);
+             //buildSiteMap();
+             //baiduSeoUpdate(`${config.INFO.site}/tag/${result.slug}`);
          })
          .catch(err => {
+             console.log(err)
              handleError({res,message:"修改失败",err});
          })
      }

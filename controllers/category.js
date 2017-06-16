@@ -44,14 +44,12 @@ categoryCtrl.list.POST = ({body: category,body:{ slug }},res) => {
 categoryCtrl.list.GET = ( req,res) => {
     // 
     const { page = 1,per_page = 10 } = req.query;
-
     // 查询配置
     let options = {
         sort:{'_id': -1},
         limit: Number(per_page),
         page:Number(page)
     }
-
     // 获取分类文章
     const getCatrgoriesCount = (cagetories) => {
         let $match = {}; // 用于过滤条件
@@ -80,7 +78,6 @@ categoryCtrl.list.GET = ( req,res) => {
             requestSuccess(cagetories); // 这里直接查询分类
         })
     }
-
     // 分页查询categories
     Category.paginate({},options)
     .then((cagetories) => {
@@ -90,7 +87,6 @@ categoryCtrl.list.GET = ( req,res) => {
     .catch(err => {
         handleError({ res,message:"请求分类数据失败",err })
     }); 
-
     // 请求处理成功
     const requestSuccess = ( categoies ) => {
         handleSuccess({
@@ -114,9 +110,11 @@ categoryCtrl.item.PUT = ({params:{ _id },body:category,body:{ slug,pid }},res) =
         handleError({res,message:"缺少slug字段"});
         return false;
     }
+    console.log(slug);
     // 查询slug
-    Category.find(slug)
+    Category.find({slug:slug})
     .then(([_category]) => { // find：查询是一个数组 利用结构赋值；
+        console.log(_category)
         const hasExit = (_category && (_category._id == category._id));
         hasExit ? handleError({res,message:"slug已存在"}) : putCategory();
     })
@@ -141,22 +139,99 @@ categoryCtrl.item.PUT = ({params:{ _id },body:category,body:{ slug,pid }},res) =
     }
 }
 
-// 单个删除
+// 单个删除,关联PID删除，
 categoryCtrl.item.DELETE = ({params: { _id }},res) => {
-    console.log(_id)
-    Category.findByIdAndRemove(_id)
+    console.log(_id);
+    // 删除对象, 返回删除对象
+    const delCategory = () => {
+        return Category.findByIdAndRemove(_id) //返回一个Promise
+    }
+
+    // 查看哪些category中  使用当前category._id;
+    const searchCategory = (category) => {
+        return new Promise((resolve,reject) => {
+            Category.find({pid: _id})
+            .then((categories) => {
+                if(!categories.length){
+                    resolve({result: category});
+                    return false;
+                }
+                // 根据父pid 查询关联子id；
+                //初始化并返回一个Bulk()集合的新的操作构建器。构建器构建了MongoDB批量执行的写操作的有序列表。
+                let _category = Category.collection.initializeOrderedBulkOp();//通过有序的操作列表，MongoDB将连续执行列表中的写操作。
+                console.log(_category);
+                //有序的批量操作;
+                _category.find({ '_id': { $in: Array.from(categories, c => c._id) } })
+                .update({ $set: { pid: null }})
+                .execute((err,data ) => {
+                    console.log(data);
+                    err ? reject(err) : resolve({result: category});
+                })
+            })
+            .catch((err) => reject(err));
+        })   
+    }
+
+    // 使用asyn一步函数;会自动交还执行权；
+    (async () => {
+        const category = await delCategory();  // await关键字:等函数执行完会自定交还执行权，执行下面操作;
+        console.log(category,"=======");  // 删除对象
+        return await searchCategory(category);
+    })()
+    .then((result) => {
+        handleSuccess({res,nessage:"删除成功",result});
+    })
+    .catch((err) => {
+        handleError({err,message:"删除失败",err});
+    });
+}
+
+// 多个删除
+categoryCtrl.list.DELETE = ({body: categories},res) => {
+    if(!categories.length){
+        handleError({res,message:"缺少删除数据"})
+        return false;
+    }
+    // 改进版
+    const delCategories = () => {
+        return Category.remove({"_id": {$in:categories }});
+    }
+    console.log(categories);
+    // 更新值
+    const updateCategories = () => { 
+        return new Promise((resolve,reject) => {
+            Category.find({pid:{$in:categories}})
+            .then((_categories) => {
+                    console.log(_categories);
+                    if(!_categories.length){
+                        resolve(null)
+                        return false;
+                    }
+                    Category.find({ '_id': { $in: Array.from(_categories, c => c._id) } })
+                    .update({ $set: { pid: null }})
+                    .exec((err,data ) => {
+                        console.log(data);
+                        err ? reject(err) : resolve(data);
+                    })
+                })
+            .catch((err) => {
+                console.log(err);
+                reject(err);
+            })
+        })
+    }
+    (async () => {
+        const data = await delCategories();
+        console.log(data.result.ok);
+        if(!data.result.ok) return false;
+        return await updateCategories();
+    })()
     .then((result) => {
         handleSuccess({res,message:"删除成功",result});
     })
     .catch((err) => {
-        console.log(err);
-        handleError({res,message:"删除失败",err});
+        handleError({res,message:"删除失败"});
     })
-}
-
-// 多个删除
-categoryCtrl.list.DELETE = ({body: { cagetories }},res) => {
-
 }
 
 
