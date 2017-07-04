@@ -18,7 +18,6 @@ const articleCtrl = { list:{}, item:{} };
 
 // 新增文章
 articleCtrl.list.POST = ({ body: article },res) => {
-    console.log(article);
     if(!article.title || !article.content){
         handleError({res,message:"文本框未填写完整"});
         return false;
@@ -36,6 +35,7 @@ articleCtrl.list.POST = ({ body: article },res) => {
 articleCtrl.list.GET = ( req,res) => {
     // 查询参数
     let { keyword,state,category,public,tag,pre_page,page,date,category_slug,tag_slug,hot } = req.query;
+    //console.log(keyword,page);
 
     const arr = ['0','1','-1'];
 
@@ -44,6 +44,7 @@ articleCtrl.list.GET = ( req,res) => {
         sort:{ _id: -1 }, // 根据ID降序
         limit: Number(pre_page || 10), // 限制查询题哦数
         page:Number(page || 1), //当前页码
+        populate:["category",'tag'], // 根据category和tag字段查询相关集合数据库；关联查询
         select:"-password -content" //强制不显示字段
     }
     let query = {};
@@ -104,7 +105,7 @@ articleCtrl.list.GET = ( req,res) => {
         // 分页插叙
         Article.paginate(query,options)
         .then(articles => {
-            //console.log(articles);
+            //console.log(articles.docs);
             handleSuccess({
                 res,
                 message:"文章列表获取成功",
@@ -158,6 +159,117 @@ articleCtrl.list.GET = ( req,res) => {
     // 查询
     getArticles();
 }
+
+// 批量删除
+articleCtrl.list.DELETE = ({body:{ articles }},res) => {
+    console.log(articles);
+    console.log("delete");
+    if(!articles && !articles.length){
+        handleError({res,message:"缺少删除数据"});
+        return false;
+    }
+    Article.remove({"_id":{$in: articles}})
+    .then((result) => {
+        handleSuccess({res,message:"删除成功",result});
+    })
+    .catch((err) => {
+        handleError({res,message:"删除失败",err});
+    })
+}
+
+// 批量文件操作
+articleCtrl.list.PATCH = ({body:{ articles,action}},res) => {
+    console.log(articles)
+    if(!articles && !articles.leng){
+        handleError({res,message:"缺少字段"});
+        return false;
+    }
+    // 
+    let options = {};
+    switch(action){
+        // 快速发布
+        case 1: 
+            options.state = 1;
+            break;
+        // 移置草稿
+        case 2: 
+            options.state = 0;
+            break;
+        // 回收站
+        case 3: 
+            options.state = -1;
+            break;
+        default:
+            break;
+    }
+    console.log(options.state);
+    Article.update({"_id":{ $in: articles }},{ $set: options },{ multi:true })
+    .then((result) => {
+        handleSuccess({res,message:"修改文章状态成功",result});
+    })
+    .catch((err) => {
+        console.log(err);
+        handleError({res,message:"修改文章状态失败",err});
+    })
+}
+
+
+// 根据ID获取文章信息
+articleCtrl.item.GET = ({params:{ _id }},res) => {
+    console.log(_id);
+    // 判断Id来源
+    const isFindById = Object.is(Number(_id),NaN);  // 判断_id还是id,_id为true，id为false;
+    //console.log(isFindById);
+    (isFindById ? 
+        Article.findById({_id: _id}).select('-meta -create_at -update_at'): // 后台获取
+        Article.findOne({id:id,state: 1,public:1}).populate('category tag').exec() // 前台获取
+        )
+        .then((result) => {
+            // id获取
+            if(!isFindById){
+                result.meta.views += 1;  // 查看数量;
+                result.save(); //保存
+            }
+            // id获取
+            if(!isFindById && result.tag.length){ // 
+                getRelatedArticles(result.toObject()); // toObject()转成对象
+            }else{
+                console.log(result);
+                handleSuccess({res,message:"文章获取成功",result});
+            }
+        })
+        .catch((err) => {
+            handleError({res,message:"获取文章失败",err})
+        })
+
+    const getRelatedArticles = result => {
+        Article.find({state:1,public:1,tag:{$in: result.tag.map((t) => t._id)}},
+        'id title description thumb -_id') // 字段强制显示和强制隐藏
+        .exec((err,articles) => {
+            result.related = err ? [] : articles;
+            handleSuccess({ res, result, message: '文章获取成功' });
+        })
+    }
+}
+
+// 修改ID
+articleCtrl.item.PUT = ({params:_id,body:article},res) => {
+    console.log(_id);
+    console.log(article);
+    if(!article.title && !article.content){
+        handleError({res,message:"缺少必要参数"});
+        return false;
+    }
+    Article.findByIdAndUpdate(_id,article,{new:true})
+    .then((result = article) => {
+        handleSuccess({res,message:"文章修改成功",result});
+    })
+    .catch((err) => {
+        console.log(err);
+        handleError({res,message:"文章修改失败"},err);
+    })
+}
+
 
 // export
 exports.list = (req, res) => { handleRequest({ req, res, controller: articleCtrl.list })};

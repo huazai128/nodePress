@@ -8,7 +8,7 @@ require("app-module-path").addPath(__dirname + "/"); //模块路径  模块引�
 
 const config = require("config/config");
 const mongodb = require("config/mongodb");
-const routes = require("routes/index")
+const routes = require("routes/index");
 const app = express();
 
 //连接数据库

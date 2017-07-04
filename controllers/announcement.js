@@ -7,7 +7,6 @@ const authIsVerified = require("utils/auth");
 const Announcement = require("modules/announcement");
 
 const { handleRequest,handleError,handleSuccess } = require("utils/handle");
-
 const announcementCtrl = { list:{},item:{} };
 
 //获取所用的公告信息

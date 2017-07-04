@@ -1,8 +1,11 @@
 
 //请求
 exports.handleRequest = ({ req, res, controller }) => {//对象结构是根据对象属性肤质，与顺序无关；
+    console.log(controller)
     const method = req.method;
+    console.log(method);
     const support = !!controller[method];//!!强制把其他类型转换成boolean类型
+    console.log(support);
     support && controller[method](req,res);
     support || res.status(405).jsonp({ code: 0, message: '不支持该请求类型！' });
 };

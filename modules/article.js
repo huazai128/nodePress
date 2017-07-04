@@ -50,11 +50,11 @@ const articleSchema = new mongoose.Schema({
         comments:{ type:Number,default:0 }, //评论数量
     },
 
-    //自定义扩张
-    extends:{
+    // 自定义扩展
+    extends: [{ 
         name: { type: String, validate: /\S+/ },
         value: { type: String, validate: /\S+/ } 
-    }
+    }]
 });
 
 articleSchema.set("toObject",{getters: true});//
